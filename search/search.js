@@ -13,7 +13,8 @@ $(document).ready(function() {
             "pageimages" : function(q) {
                 return {
                     "action" : "query",
-                    "indexpageids" : 1,
+                    "prop" : "images",
+                    "indexpageids" : "1",
                     "titles" : q.title
                 };
             },
@@ -24,13 +25,15 @@ $(document).ready(function() {
                     "prop" : "imageinfo",
                     "iiprop" : "url",
                     "iiurlwidth" : q.width,
-                    "indexpageids" : 1,
+                    "indexpageids" : "1",
                     "titles" : q.image
                 };
             }
         }
 
-        if (!queries[type]) return false;
+        if (!queries[type]) {
+            throw new Error("Unknown query type");
+        }
 
         return makeUrl(queries[type](args));
     }
@@ -48,9 +51,16 @@ $(document).ready(function() {
             var value = args[key];
             url += (first) ? "?" : "&";
             first = false;
-            value = (value.indexOf("!noencode!") === 0) ? value.slice(10) : encodeURIComponent(value);
+
+            if (value.indexOf("!noencode!") === 0 && typeof value === "string") {
+                value = value.slice(10);
+            } else {
+                value = encodeURIComponent(value);
+            }
+
             url += key + '=' + value;
         }
+
         return url;
     }
 
@@ -63,28 +73,34 @@ $(document).ready(function() {
             $.getJSON(url, function(data) {
                 response(data[1]);
             });
-        }
-    });
+        },
 
+        select : function(event, ui) {
+            $("#images").empty();
 
-    $("#results a").live('click', function() {
-        $("#images").empty();
-        var q = $(this).text();
-        var url = 'http://commons.wikimedia.org/w/api.php?action=query&prop=images&format=json&indexpageids=1&callback=?&titles=' + q;
-        $.getJSON(url, function(data) {
-            var pageid = data.query.pageids[0];
-            var query = data.query.pages[pageid].images;
-            if (!query) return false;
-            $.each(query, function() {
-                // console.log(this);
-                var url = 'http://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url&iiurlwidth=200&callback=?&format=json&indexpageids=1&&titles=' + encodeURIComponent(this.title);
-                $.getJSON(url, function(data) {
-                    var pageid = data.query.pageids[0];
-                    var src = data.query.pages[pageid].imageinfo[0].thumburl;
-                    $("#images").append('<img src="' + src + '" />');
-                    // console.log(src);
+            var url = getQueryUrl("pageimages", {
+                "title" : ui.item.value
+            });
+
+            $.getJSON(url, function(data) {
+                var pageid = data.query.pageids[0],
+                    query = data.query.pages[pageid].images;
+
+                if (!query) $("#images").html("No images found :(");
+
+                $.each(query, function() {
+                    var url = getQueryUrl("thumbs", {
+                        width : "200",
+                        image : this.title
+                    });
+
+                    $.getJSON(url, function(data) {
+                        var pageid = data.query.pageids[0],
+                            src = data.query.pages[pageid].imageinfo[0].thumburl;
+                        $("#images").append('<img src="' + src + '" />');
+                    });
                 });
             });
-        });
+        }
     });
 });
