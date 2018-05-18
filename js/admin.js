@@ -1,11 +1,47 @@
 (function($) {
 
 	/**
+	 * Escape a string for HTML.
+	 *
+	 * Converts special characters to HTML entities.
+	 *
+	 *     mw.html.escape( '< > \' & "' );
+	 *     // Returns &lt; &gt; &#039; &amp; &quot;
+	 *
+	 * @param {string} text The string to escape
+	 * @return {string} HTML
+	 */
+	function escHtml(text) {
+		return text.replace( /['"<>&]/g, function ( s ) {
+			switch ( s ) {
+			case '\'':
+				return '&#039;';
+			case '"':
+				return '&quot;';
+			case '<':
+				return '&lt;';
+			case '>':
+				return '&gt;';
+			case '&':
+				return '&amp;';
+			}
+		} );
+	}
+
+	/**
 	 * @param {string} key
 	 * @return {string} Message text
 	 */
 	function msg(key) {
-		return WP_PHOTOCOMMONS.translations[key];
+		var raw = WP_PHOTOCOMMONS.translations[key];
+		if (!raw) {
+			throw new Error('Unknown message key: ' + key);
+		}
+		return raw;
+	}
+
+	function msgEsc(key) {
+		return escHtml(msg(key));
 	}
 
 	function addButtons() {
@@ -16,23 +52,33 @@
 			'Add Wikimedia Commons image</button>'
 		));
 
-		$('<div id="photocommons-dialog"></div>').appendTo('body').load(WP_PHOTOCOMMONS.searchUrl, function() {
-			PhotoCommons.init();
+		var $dialog = $('<div id="photocommons-dialog"></div>')
+			.html(''.concat(
+				'<label for="wp-photocommons-search">',
+				msgEsc('Search'),
+				':</label>',
+				'<input type="search" id="wp-photocommons-search" />',
+				'<ul id="wp-photocommons-results"></ul>',
+				'<img src="' + WP_PHOTOCOMMONS.imgLoaderUrl + '" style="display:none;" id="wp-photocommons-loading" />',
+				'<div id="wp-photocommons-images"></div>'
+			))
+			.appendTo('body');
 
-			dialog = $('#photocommons-dialog').dialog({
-				title : msg('PhotoCommons') + ' - ' + msg('Insert images from Wikimedia Commons'),
-				width : 800,
-				height : 500,
-				autoOpen: false
-			});
+		PhotoCommons.init();
+
+		$dialog.dialog({
+			title: msg('PhotoCommons') + ' - ' + msg('Insert images from Wikimedia Commons'),
+			width: 800,
+			height: 500,
+			autoOpen: false
 		});
 
-		$('#photocommons-add').live('click', function(e) {
+		$('#photocommons-add').on('click', function(e) {
 			e.preventDefault();
 
-			$("#photocommons-dialog").dialog('open');
+			$dialog.dialog('open');
 
-			$('#wp-photocommons-images .image').live('click', function() {
+			$('#wp-photocommons-images .image').on('click', function() {
 				var file = $(this).attr('data-filename'),
 					shortcode = '[photocommons file="' + file + '" width="300"] ';
 
@@ -48,11 +94,11 @@
 					tinyMCE.execCommand('mceInsertContent', false, shortcode);
 				}
 
-				$("#photocommons-dialog").dialog('close');
+				$dialog.dialog('close');
 			});
 		});
 	}
 
-	$(document).ready( addButtons );
+	$( addButtons );
 
 })(jQuery);
