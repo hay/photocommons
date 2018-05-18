@@ -7,7 +7,7 @@
     background-position: center center;
     background-repeat: no-repeat;
     border: 2px solid #999;
-    
+
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -o-border-radius: 10px;
@@ -19,6 +19,10 @@
         border: 2px solid #f99;
     }
 
-#wp-photocommons-search { 
+#wp-photocommons-search {
     width: 500px;
+}
+
+.ui-dialog {
+    z-index: 1000;
 }
