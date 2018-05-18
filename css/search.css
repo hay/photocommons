@@ -1,0 +1,24 @@
+#wp-photocommons-images .image {
+    width: 200px;
+    height: 200px;
+    float: left;
+    margin: 10px;
+    cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 2px solid #999;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+}
+
+    #wp-photocommons-images .image:hover {
+        border: 2px solid #f99;
+    }
+
+#wp-photocommons-search { 
+    width: 500px;
+}
