@@ -1,7 +1,4 @@
-
 (function($) {
-
-	var PATH = '../wp-content/plugins/wp-photocommons';
 
 	function _(msg) {
 		return window.PhotoCommons.translations[msg];
@@ -11,11 +8,11 @@
 		$('#wp-content-media-buttons').append(''.concat(
 			'<button type="button" id="photocommons-add"',
 			'class="button">',
-			'<img src="' + PATH + '/img/button.png"/>',
+			'<img src="' + WP_PHOTOCOMMONS.imgButtonUrl + '"/>',
 			'Add Wikimedia Commons image</button>'
 		));
 
-		$('<div id="photocommons-dialog"></div>').appendTo('body').load(PATH + '/search.php?standalone=1', function() {
+		$('<div id="photocommons-dialog"></div>').appendTo('body').load(WP_PHOTOCOMMONS.searchUrl, function() {
 			PhotoCommons.init();
 
 			dialog = $('#photocommons-dialog').dialog({

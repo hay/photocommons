@@ -18,12 +18,12 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 class PhotoCommons {
-	const PLUGIN = "wp-photocommons";
-	const PLUGIN_PATH = '/wp-photocommons/';
-	const FILEPATH_PATTERN = 'http://commons.wikimedia.org/w/index.php?title=Special:FilePath&file=%s&width=%s';
-	const FILEPAGE_PATTERN = 'http://commons.wikimedia.org/w/index.php?title=File:%s';
+	private $pluginDir;
+	const FILEPATH_PATTERN = 'https://commons.wikimedia.org/w/index.php?title=Special:FilePath&file=%s&width=%s';
+	const FILEPAGE_PATTERN = 'https://commons.wikimedia.org/w/index.php?title=File:%s';
 
 	function __construct() {
+		$this->baseDir = dirname( __FILE__ );
 		if ( is_admin() ) {
 			$this->init_admin();
 		} else {
@@ -62,10 +62,19 @@ class PhotoCommons {
 
 	private function enqueue_scripts() {
 		// Register some of our own scripts
-		wp_register_script( 'translations', plugins_url() . self::PLUGIN_PATH . 'js/translations.php' );
-		wp_register_script( 'admin', plugins_url() . self::PLUGIN_PATH . 'js/admin.js' );
-		wp_register_script( 'search', plugins_url() . self::PLUGIN_PATH . 'js/search.js' );
-		wp_register_script( 'suggestions', plugins_url() . self::PLUGIN_PATH . 'js/jquery.suggestions.js' );
+		wp_register_script( 'translations', plugins_url( 'js/translations.php', $this->baseDir ) );
+		wp_register_script( 'photocommons-admin', plugins_url( 'js/admin.js', $this->baseDir ) );
+		wp_register_script( 'search', plugins_url( 'js/search.js', $this->baseDir ) );
+		wp_register_script( 'suggestions', plugins_url( 'js/jquery.suggestions.js', $this->baseDir ) );
+
+		wp_localize_script(
+			'photocommons-admin',
+			'WP_PHOTOCOMMONS',
+			[
+				'imgButtonUrl' => plugins_url('img/button.png', $this->baseDir),
+				'searchUrl' => plugins_url('search.php?standalone=1', $this->baseDir),
+			]
+		);
 
 		// Enqueue external libraries
 		wp_enqueue_script( 'jquery' );
@@ -74,16 +83,16 @@ class PhotoCommons {
 
 		// Enqueue our own scripts
 		wp_enqueue_script( 'translations' );
-		wp_enqueue_script( 'admin' );
+		wp_enqueue_script( 'photocommons-admin' );
 		wp_enqueue_script( 'search' );
 		wp_enqueue_script( 'suggestions' );
 	}
 
 	private function enqueue_styles() {
 		// Register our own styles and enqueue
-		wp_register_style( 'jquid_jquery_blog_stylesheet', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/redmond/jquery-ui.css' );
-		wp_register_style( 'suggestions', plugins_url() . self::PLUGIN_PATH . 'css/jquery.suggestions.css' );
-		wp_register_style( 'search', plugins_url() . self::PLUGIN_PATH . 'css/search.css' );
+		wp_register_style( 'jquid_jquery_blog_stylesheet', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/redmond/jquery-ui.css' );
+		wp_register_style( 'suggestions', plugins_url( 'css/jquery.suggestions.css', $this->baseDir ) );
+		wp_register_style( 'search', plugins_url( 'css/search.css', $this->baseDir ) );
 
 		wp_enqueue_style( 'jquid_jquery_blog_stylesheet' );
 		wp_enqueue_style( 'suggestions' );
