@@ -1,7 +1,11 @@
 (function($) {
 
-	function _(msg) {
-		return window.PhotoCommons.translations[msg];
+	/**
+	 * @param {string} key
+	 * @return {string} Message text
+	 */
+	function msg(key) {
+		return WP_PHOTOCOMMONS.translations[key];
 	}
 
 	function addButtons() {
@@ -16,7 +20,7 @@
 			PhotoCommons.init();
 
 			dialog = $('#photocommons-dialog').dialog({
-				title : _('PhotoCommons') + ' - ' + _('Insert images from Wikimedia Commons'),
+				title : msg('PhotoCommons') + ' - ' + msg('Insert images from Wikimedia Commons'),
 				width : 800,
 				height : 500,
 				autoOpen: false
