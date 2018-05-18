@@ -5,9 +5,6 @@
 	 *
 	 * Converts special characters to HTML entities.
 	 *
-	 *     mw.html.escape( '< > \' & "' );
-	 *     // Returns &lt; &gt; &#039; &amp; &quot;
-	 *
 	 * @param {string} text The string to escape
 	 * @return {string} HTML
 	 */
@@ -77,26 +74,27 @@
 			e.preventDefault();
 
 			$dialog.dialog('open');
-
-			$('#wp-photocommons-images .image').on('click', function() {
-				var file = $(this).attr('data-filename'),
-					shortcode = '[photocommons file="' + file + '" width="300"] ';
-
-				// Depending on whether we are in Wysiwyg or HTML mode we
-				// do a different insert
-				if ($('#edButtonHTML').hasClass('active')) {
-					// HTML editor
-					$('#content').val( function(i,val){
-						return shortcode + val;
-					});
-				} else {
-					// Wysiwyg
-					tinyMCE.execCommand('mceInsertContent', false, shortcode);
-				}
-
-				$dialog.dialog('close');
-			});
 		});
+
+		$('#wp-photocommons-images').on('click', '.image', function() {
+			var file = $(this).attr('data-filename'),
+				shortcode = '[photocommons file="' + file + '" width="300"] ';
+
+			// Depending on whether we are in Wysiwyg or HTML mode we
+			// do a different insert
+			if ($('#edButtonHTML').hasClass('active')) {
+				// HTML editor
+				$('#content').val( function(i,val){
+					return shortcode + val;
+				});
+			} else {
+				// Wysiwyg
+				tinyMCE.execCommand('mceInsertContent', false, shortcode);
+			}
+
+			$dialog.dialog('close');
+		});
+
 	}
 
 	$( addButtons );
