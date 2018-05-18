@@ -1,9 +1,4 @@
-if ( !window.PhotoCommons ) {
-    window.PhotoCommons = {};
-}
-
-(function($){
-    $.extend( PhotoCommons, {
+var PhotoCommons = {
         getQueryUrl: function( type, args ) {
             var queries = {
                 // Used for the suggestions
@@ -129,6 +124,4 @@ if ( !window.PhotoCommons ) {
 
             } );
         }
-    });
-
-})(jQuery);
+    };

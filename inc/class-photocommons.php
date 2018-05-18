@@ -63,19 +63,20 @@ class PhotoCommons {
 
 	private function enqueue_scripts() {
 		// Register some of our own scripts
-		wp_register_script( 'photocommons-admin', plugins_url( 'js/admin.js', $this->baseDir ) );
-		wp_register_script( 'search', plugins_url( 'js/search.js', $this->baseDir ) );
 		wp_register_script( 'suggestions', plugins_url( 'js/jquery.suggestions.js', $this->baseDir ) );
+		wp_register_script( 'search', plugins_url( 'js/search.js', $this->baseDir ) );
+		wp_register_script( 'photocommons-admin', plugins_url( 'js/admin.js', $this->baseDir ) );
 
 		wp_localize_script(
 			'photocommons-admin',
 			'WP_PHOTOCOMMONS',
 			[
 				'imgButtonUrl' => plugins_url('img/button.png', $this->baseDir),
-				'searchUrl' => plugins_url('search.php?standalone=1', $this->baseDir),
+				'imgLoaderUrl' => plugins_url('img/loading.gif', $this->baseDir),
 				'translations' => [
 					'Insert images from Wikimedia Commons' => 'Insert images from Wikimedia Commons',
 					'PhotoCommons' => 'PhotoCommons',
+					'Search' => 'Search',
 				],
 			]
 		);
@@ -86,9 +87,9 @@ class PhotoCommons {
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
 		// Enqueue our own scripts
-		wp_enqueue_script( 'photocommons-admin' );
-		wp_enqueue_script( 'search' );
 		wp_enqueue_script( 'suggestions' );
+		wp_enqueue_script( 'search' );
+		wp_enqueue_script( 'photocommons-admin' );
 	}
 
 	private function enqueue_styles() {
