@@ -1,0 +1,2 @@
+# Exclude from WordPress plugin package
+/.* export-ignore
