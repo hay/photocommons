@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.com/hay/photocommons.svg?branch=master)](https://travis-ci.com/hay/photocommons)
 
-**This is a deprecated plugin that has had no development for eight years and just kept here for archival purposes.**
-
 # PhotoCommons
 
 Search, Find and Insert images directly from Wikimedia Commons into your WordPress site.
